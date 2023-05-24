@@ -1,0 +1,30 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+      "config:base",
+      ":docker",
+      ":prHourlyLimitNone",
+      ":rebaseStalePrs",
+      ":label(renovate)"
+    ],
+    "gitlabci": {
+        "fileMatch": ["\\.gitlab-ci\\.yml$"]
+      },
+    "regexManagers": [
+      {
+        "fileMatch": ["(^|/|\\.)(Docker|Container)file$", "(^|/)(Docker|Container)file[^/]*$"],
+        "matchStrings": ["#\\s*renovate:\\s*datasource=(?<datasource>.*?)\\sdepName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\sENV .*?_VERSION=\"(?<currentValue>.*)\"\\s"],
+        "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+        
+      },
+      {
+        "fileMatch": ["^\\.gitlab-ci\\.yml$"],
+        "matchStrings": ["datasource=(?<datasource>.*?)\\sdepName=(?<depName>.*?)\n\\s+PACKAGE_VERSION+[A-Za-z0-9_]:\\s(?<currentValue>.*)"]
+      },
+      {
+        "fileMatch": ["ansible/roles/(.*?)\\.ya?ml$"],
+        "matchStrings": ["#\\s*renovate:\\s*datasource=(?<datasource>.*?)\\sdepName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\n.*?: \"(?<currentValue>.*)\"\\s"],
+        "versioningTemplate": "{{#if versioning}}{{versioning}}{{else}}semver{{/if}}"
+      }
+    ]   
+}

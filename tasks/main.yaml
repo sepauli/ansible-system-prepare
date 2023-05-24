@@ -1,0 +1,39 @@
+---
+- name: Include default variables
+  ansible.builtin.include_vars: "../vars/main.yaml"
+
+- name: Include release specific variables
+  ansible.builtin.include_vars: "{{ _loop_var }}"
+  loop: "{{ query('first_found', _params) }}"
+  loop_control:
+    loop_var: _loop_var
+  vars:
+    _params:
+      files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yaml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yaml"
+        - "{{ ansible_distribution | lower }}.yaml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_version | lower }}.yaml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yaml"
+        - "{{ ansible_os_family | lower }}.yaml"
+      paths:
+        - "../vars"
+      skip: true
+
+- name: Include release specific tasks
+  ansible.builtin.include_tasks: "{{ _loop_var }}"
+  loop: "{{ query('first_found', _params) }}"
+  loop_control:
+    loop_var: _loop_var
+  vars:
+    _params:
+      files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yaml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yaml"
+        - "{{ ansible_distribution | lower }}.yaml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_version | lower }}.yaml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yaml"
+        - "{{ ansible_os_family | lower }}.yaml"
+      paths:
+        - "."
+      skip: true

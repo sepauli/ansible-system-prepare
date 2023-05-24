@@ -1,0 +1,16 @@
+---
+
+# renovate: datasource=repology depName=ubuntu_22_04/bash-completion versioning=loose
+bash_completion_version: "1:2.11-5ubuntu1"
+# renovate: datasource=repology depName=ubuntu_22_04/apt versioning=loose
+apt_transport_https_version: "2.4.9"
+# renovate: datasource=repology depName=ubuntu_22_04/openssh versioning=loose
+openssh_server_version: "1:8.9p1-3ubuntu0.1"
+# renovate: datasource=repology depName=ubuntu_22_04/software-properties versioning=loose
+software_properties_common_version: "0.99.22.6"
+# renovate: datasource=repology depName=ubuntu_22_04/ca-certificates versioning=loose
+ca_certificates_version: "20211016"
+# renovate: datasource=repology depName=ubuntu_22_04/cloud-init versioning=loose
+cloud_init_version: "23.1.2-0ubuntu0~22.04.1"
+# renovate: datasource=repology depName=ubuntu_22_04/cloud-initramfs-growroot versioning=loose
+cloud_initramfs_growroot_version: "0.47ubuntu1"

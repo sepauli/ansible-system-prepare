@@ -1,0 +1,10 @@
+---
+- name: Gather package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: Validate package versions
+  assert:
+    that:
+      - "ansible_facts.packages['{{ item.key }}'] == '{{ item.value }}'"
+  loop: "{{ dict2items(_apt) }}"

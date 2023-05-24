@@ -1,0 +1,9 @@
+---
+_apt:
+  - { state: "present", name: "bash-completion={{ bash_completion_version }}" }
+  - { state: "present", name: "apt-transport-https={{ apt_transport_https_version }}" }
+  - { state: "present", name: "openssh-server={{ openssh_server_version }}" }
+  - { state: "present", name: "software-properties-common={{ software_properties_common_version }}" }
+  - { state: "present", name: "ca-certificates={{ ca_certificates_version }}*" }
+  - { state: "present", name: "cloud-init={{ cloud_init_version }}" } # needed for cloud-initramfs-growroot
+  - { state: "present", name: "cloud-initramfs-growroot={{ cloud_initramfs_growroot_version }}" } # detect and resize one or more existing partitions automatically after reboot

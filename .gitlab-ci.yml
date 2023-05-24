@@ -1,0 +1,68 @@
+stages:
+  - validate
+  - test
+
+validate:dockerfile-lint:
+  image: hadolint/hadolint:v2.12.0-alpine
+  stage: validate
+  variables:
+    DOCKERFILES: "molecule/Dockerfile"
+  script: hadolint ${DOCKERFILES}
+  rules:
+    # This avoids double matching in merge request pipelines
+    # See https://docs.gitlab.com/ee/ci/yaml/#differences-between-rules-and-onlyexcept
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  
+validate:ansible-lint:
+  stage: validate
+  image: 
+    name: alpine:3.18
+    entrypoint: [""]
+  script:
+    - apk add --no-cache ansible ansible-lint black py-pip
+    - ansible-lint tasks/*
+  rules:
+    # This avoids double matching in merge request pipelines
+    # See https://docs.gitlab.com/ee/ci/yaml/#differences-between-rules-and-onlyexcept
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+
+test:molecule:
+  stage: test
+  image: 
+    name: docker:stable
+  services:
+    - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    ANSIBLE_FORCE_COLOR: '1'
+    PY_COLORS: '1'
+  before_script:
+    - apk update && apk add py3-pip gcc libc-dev python3-dev libffi-dev git rsync
+    - pip3 install --upgrade pip
+    - pip3 install -r requirements.txt
+    - python3 --version
+    - ansible --version
+    - molecule --version
+  dependencies:
+    - validate:ansible-lint
+  script:
+    - molecule test --driver-name docker
+
+validate:renovate-config:
+  stage: validate
+  image:
+    name: renovate/renovate:latest
+    entrypoint: [""]
+  variables:
+    LOG_LEVEL: debug
+  script:
+    - cd $CI_PROJECT_DIR
+    - renovate-config-validator
+  rules:
+    # This avoids double matching in merge request pipelines
+    # See https://docs.gitlab.com/ee/ci/yaml/#differences-between-rules-and-onlyexcept
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'

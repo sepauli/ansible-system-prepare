@@ -1,0 +1,4 @@
+---
+- name: Install python for Ansible Molecule testing
+  ansible.builtin.raw: test -e /usr/bin/python || (apt -y update && apt install -y python3)
+  changed_when: false
